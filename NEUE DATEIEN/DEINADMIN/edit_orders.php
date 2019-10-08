@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2019 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: edit_orders.php ZC156DE 2019-09-13 19:13:51Z webchills $
+ * @version $Id: edit_orders.php ZC156DE 2019-10-08 09:46:51Z webchills $
  */
   
 
@@ -172,23 +172,7 @@ switch ($action) {
             break;
         }
         zen_db_perform(TABLE_ORDERS, $sql_data_array, 'update', "orders_id = $oID LIMIT 1");
-
-        // BEGIN TY TRACKER 1 - READ FROM POST
-        $track_id = array();
-        if (defined('TY_TRACKER') && TY_TRACKER == 'True') {
-            $track_id = zen_db_prepare_input($_POST['track_id']);
-            $ty_changed = false;
-            foreach ($track_id as $id => $track) {
-                $carrier_constant = "CARRIER_STATUS_$id";
-                if (defined($carrier_constant) && constant($carrier_constant) == 'True' && !empty($track)) {
-                    $ty_changed = true;
-                }
-            }
-            if (!$ty_changed) {
-                $track_id = array();
-            }
-        }
-        // END TY TRACKER 1 - READ FROM POST
+        
         $check_status = $db->Execute(
             "SELECT customers_name, customers_email_address, orders_status, date_purchased 
                FROM " . TABLE_ORDERS . "
@@ -205,18 +189,7 @@ switch ($action) {
                     if (!empty($comments)) {
                         $notify_comments = EMAIL_TEXT_COMMENTS_UPDATE . $comments . PHP_EOL . PHP_EOL;
                     }
-                    // BEGIN TY TRACKER 2 - EMAIL TRACKING INFORMATION
-                    if (!empty($track_id)) {
-                        $notify_comments = EMAIL_TEXT_COMMENTS_TRACKING_UPDATE . PHP_EOL . PHP_EOL;
-                        $comment = EMAIL_TEXT_COMMENTS_TRACKING_UPDATE;
-                    }
-                    foreach ($track_id as $id => $track) {
-                        if (!empty($track) && constant('CARRIER_STATUS_' . $id) == 'True') {
-                            $notify_comments .= "Your " . constant('CARRIER_NAME_' . $id) . " Tracking ID is " . $track . " \n<br /><a href=" . constant('CARRIER_LINK_' . $id) . $track . ">Click here</a> to track your package. \n<br />If the above link does not work, copy the following URL address and paste it into your Web browser. \n<br />" . constant('CARRIER_LINK_' . $id) . $track . "\n\n<br /><br />It may take up to 24 hours for the tracking information to appear on the website." . "\n<br />";
-                        }
-                    }
-                    unset($id, $track);
-                    // END TY TRACKER 32 - EMAIL TRACKING INFORMATION
+                    
                 }
                 //send emails
                 $account_history_info_link = zen_catalog_href_link(FILENAME_CATALOG_ACCOUNT_HISTORY_INFO, 'order_id=' . $oID, 'SSL');
@@ -292,12 +265,7 @@ switch ($action) {
                 'comments' => $comments,
             );
 
-            // BEGIN TY TRACKER 3 - INCLUDE DATABASE FIELDS IN STATUS UPDATE
-            foreach ($track_id as $id => $track) {
-                $sql_data_array['track_id' . $id] = zen_db_input($track);
-            }
-            unset($id, $track);
-            // END TY TRACKER 3 - INCLUDE DATABASE FIELDS IN STATUS UPDATE
+            
             zen_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
 
             $sql_data_array = array(
@@ -1731,9 +1699,7 @@ if ($action == 'edit') {
                                 <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_DATE_ADDED; ?></strong></td>
                                 <td class="dataTableHeadingContent smallText a-c"><strong><?php echo TABLE_HEADING_CUSTOMER_NOTIFIED; ?></strong></td>
                                 <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_STATUS; ?></strong></td>
-<!-- TY TRACKER 4 BEGIN, DISPLAY TRACKING ID IN COMMENTS TABLE -->
-                                <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_TRACKING_ID; ?></strong></td>
-<!-- END TY TRACKER 4 END, DISPLAY TRACKING ID IN COMMENTS TABLE -->
+
                                 <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_COMMENTS; ?></strong></td>
                             </tr>
 <?php
@@ -1745,17 +1711,7 @@ if ($action == 'edit') {
                                 <td class="smallText"><?php echo zen_datetime_short($orders_history->fields['date_added']); ?></td>
                                 <td class="smallText a-c"><?php echo $icon_image; ?></td>
                                 <td class="smallText"><?php echo $orders_status_array[$orders_history->fields['orders_status_id']]; ?></td>
-<?php
-                $display_track_id = '&nbsp;';
-                for ($ty = 1; $ty < 6; $ty++) {
-                    $ty_field_name = "track_id$ty";
-                    if (!empty($orders_history->fields[$ty_field_name])) {
-                        $track_id = nl2br(zen_output_string_protected($orders_history->fields[$ty_field_name]));
-                        $display_track_id .= (constant("CARRIER_NAME_$ty") . ': <a href="' . constant("CARRIER_LINE_$ty") . $track_id . ' target="_blank">' . $track_id . '</a>&nbsp;');
-                    }
-                }
-?>
-                                <td class="smallText"><?php echo $display_track_id; ?></td>
+
                                 <td class="smallText"><?php echo nl2br(zen_db_output($orders_history->fields['comments'])); ?></td>
                             </tr>
 <?php
@@ -1987,39 +1943,7 @@ if ($action == 'edit') {
         }
     }
 ?>
-<!-- TY TRACKER 7 BEGIN, ENTER TRACKING INFORMATION -->
-<?php 
-    if (defined('TY_TRACKER') && TY_TRACKER == 'True') { 
-?>
-    <tr>
-        <td class="main">
-            <table>
-                <tr>
-                    <td class="main"><strong><?php echo zen_image(DIR_WS_IMAGES . 'icon_track_add.png', ENTRY_ADD_TRACK) . '&nbsp;' . ENTRY_ADD_TRACK; ?></strong></td>
-                </tr>
-                <tr class="v-top">
-                    <td>
-                        <table class="w100">
-                            <tr class="dataTableHeadingRow">
-                                <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_CARRIER_NAME; ?></strong></td>
-                                <td class="dataTableHeadingContent smallText"><strong><?php echo TABLE_HEADING_TRACKING_ID; ?></strong></td>
-                            </tr>
-                            <?php for($i=1;$i<=5;$i++) {
-                                if (constant('CARRIER_STATUS_' . $i) == 'True') { ?>
-                            <tr>
-                            <td><?php echo constant('CARRIER_NAME_' . $i); ?></td><td valign="top"><?php echo zen_draw_input_field('track_id[' . $i . ']', '', 'size="50"'); ?></td>
-                            </tr>
-                            <?php } } ?>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-<?php 
-    } 
-?>
-<!-- TY TRACKER 7 END, ENTER TRACKING INFORMATION -->
+
 
                     <tr>
                         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>

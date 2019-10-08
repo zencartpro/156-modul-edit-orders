@@ -106,13 +106,6 @@ define('SELECT_ORDER_LIST', 'Gehe zu Bestellung:');
 // Required for various added zen_cart functions
 define('TEXT_UNKNOWN_TAX_RATE', 'Steuer');
 define('PULL_DOWN_DEFAULT', 'Bitte wählen Sie Ihr Land');
-//Begin Ty Package Tracker
-define('TABLE_HEADING_TRACKING_ID', 'Tracking ID');
-define('TABLE_HEADING_CARRIER_NAME', 'Transportunternehmen');
-define('ENTRY_ADD_TRACK', 'Tracking ID hinzufügen');
-define('IMAGE_TRACK', 'Tracking ID hinzufügen');
-define('SELECT_ORDER_LIST', 'Gehe zu Bestellung: ');
-define('HEADING_TITLE_ORDER_DETAILS', 'Bestellnummer ');
 // Absolute's Product Attribute Grid
 define('WARNING_ATTRIBUTE_OPTION_GRID', 'Warnung: Das Modul Product Attribute Grid wurde entdeckt, aber der Product Option Type für Attribute Grid wurde nicht vollständig in die Datenbank übernommen. Übergangsweise wird PRODUCTS_OPTIONS_TYPE_ATTRIBUTE_GRID = 23997 definiert.');
 // Other elements

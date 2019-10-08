@@ -120,13 +120,6 @@ define('SELECT_ORDER_LIST', 'Jump to Order:');
 define('TEXT_UNKNOWN_TAX_RATE', 'Tax');
 define('PULL_DOWN_DEFAULT', 'Please Choose Your Country');
 
-// Ty Package Tracker
-define('TABLE_HEADING_TRACKING_ID', 'Tracking ID');
-define('TABLE_HEADING_CARRIER_NAME', 'Carrier');
-define('ENTRY_ADD_TRACK', 'Add Tracking ID');
-define('IMAGE_TRACK', 'Add Tracking ID');
-define('HEADING_TITLE_ORDER_DETAILS', 'Order # ');
-
 // Absolute's Product Attribute Grid
 define('WARNING_ATTRIBUTE_OPTION_GRID', 'Warning: Absolute\'s Product Attribute Grid was detected, however the Product Option Type for Attribute Grid was not fully installed in the database. Temporarily configuring PRODUCTS_OPTIONS_TYPE_ATTRIBUTE_GRID = 23997.');
 // Other elements
