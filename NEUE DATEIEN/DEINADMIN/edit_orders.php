@@ -1,10 +1,10 @@
 <?php
 /**
  * @package Edit Orders for Zen Cart German
- * @copyright Copyright 2003-2019 Zen Cart Development Team
+ * @copyright Copyright 2003-2020 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: edit_orders.php ZC156DE 2019-10-08 09:46:51Z webchills $
+ * @license http://www.zen-cart-pro.at/license/3_0.txt GNU Public License V3.0
+ * @version $Id: edit_orders.php ZC156DE 2020-01-05 08:46:51Z webchills $
  */
   
 
@@ -794,6 +794,35 @@ function init()
 </div>
 <!-- header_eof //-->
 <?php
+// -----
+// A store can override EO's application of the 'type="number"' parameters by adding the definition
+//
+// define('EDIT_ORDERS_USE_NUMERIC_FIELDS', '0');
+//
+// to a site-specific /admin/extra_datafiles module.
+//
+// Note that EO's rendering of input fields is (currently) a mixture of directly-coded <input /> tags
+// and inputs generated via zen_draw_input_field.  The variables set below that start with $input_ are
+// used on the function-call field-generation and the others are used when directly-coded.
+//
+if (!defined('EDIT_ORDERS_USE_NUMERIC_FIELDS')) define('EDIT_ORDERS_USE_NUMERIC_FIELDS', '1');
+if (EDIT_ORDERS_USE_NUMERIC_FIELDS != '1') {
+    $input_value_parms = '';
+    $input_tax_parms = '';
+    $value_parms = '';
+    $tax_parms = '';
+    $input_field_type = 'text';
+} else {
+    $input_value_parms = ' min="0" step="any"';
+    $input_tax_parms = ' min="0" max="100" step="any"';
+    $value_parms = $input_value_parms . ' type="number"';
+    $tax_parms = $input_tax_parms . ' type="number"';
+    $input_field_type = 'number';
+}
+
+// -----
+// Start action-based rendering ...
+//
 if ($action == 'edit') {
     if ($order->info['payment_module_code']) {
         if (file_exists(DIR_FS_CATALOG_MODULES . 'payment/' . $order->info['payment_module_code'] . '.php')) {
@@ -868,22 +897,6 @@ if ($action == 'edit') {
                 <td><?php echo zen_draw_form('edit_order', FILENAME_EDIT_ORDERS, zen_get_all_get_params(array('action','paycc')) . 'action=update_order'); ?><table width="100%" border="0">
                     <tr>
                         <td><table class="w100" id="c-form">
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER; ?></td>
-                                <td>&nbsp;</td>
-                                <td class="eo-label"><?php echo ENTRY_BILLING_ADDRESS; ?></td>
-                                <td>&nbsp;</td>
-                                <td class="eo-label"><?php echo ENTRY_SHIPPING_ADDRESS; ?></td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td><?php echo zen_image(DIR_WS_IMAGES . 'icon_customers.png', ENTRY_CUSTOMER); ?></td>
-                                <td>&nbsp;</td>
-                                <td><?php echo zen_image(DIR_WS_IMAGES . 'icon_billing.png', ENTRY_BILLING_ADDRESS); ?></td>
-                                <td>&nbsp;</td>
-                                <td><?php echo zen_image(DIR_WS_IMAGES . 'icon_shipping.png', ENTRY_SHIPPING_ADDRESS); ?></td>
-                            </tr>
 <?php
     // -----
     // Gather the maximum database field-length for each of the address-related fields in the
@@ -898,97 +911,18 @@ if ($action == 'edit') {
     $max_state_length = 'maxlength="' . zen_field_length(TABLE_ORDERS, 'customers_state') . '"';
     $max_postcode_length = 'maxlength="' . zen_field_length(TABLE_ORDERS, 'customers_postcode') . '"';
     $max_country_length = 'maxlength="' . zen_field_length(TABLE_ORDERS, 'customers_country') . '"';
-?>
 
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_NAME; ?>:&nbsp;</td>
-                                <td><input name="update_customer_name" size="45" value="<?php echo zen_db_output($order->customer['name']); ?>" <?php echo $max_name_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_NAME; ?>:&nbsp;</td>
-                                <td><input name="update_billing_name" size="45" value="<?php echo zen_db_output($order->billing['name']); ?>" <?php echo $max_name_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_NAME; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_name" size="45" value="<?php echo zen_db_output($order->delivery['name']); ?>" <?php echo $max_name_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COMPANY; ?>:&nbsp;</td>
-                                <td><input name="update_customer_company" size="45" value="<?php echo zen_db_output($order->customer['company']); ?>" <?php echo $max_company_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COMPANY; ?>:&nbsp;</td>
-                                <td><input name="update_billing_company" size="45" value="<?php echo zen_db_output($order->billing['company']); ?>" <?php echo $max_company_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COMPANY; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_company" size="45" value="<?php echo zen_db_output($order->delivery['company']); ?>" <?php echo $max_company_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_ADDRESS; ?>:&nbsp;</td>
-                                <td><input name="update_customer_street_address" size="45" value="<?php echo zen_db_output($order->customer['street_address']); ?>" <?php echo $max_street_address_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_ADDRESS; ?>:&nbsp;</td>
-                                <td><input name="update_billing_street_address" size="45" value="<?php echo zen_db_output($order->billing['street_address']); ?>" <?php echo $max_street_address_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_ADDRESS; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_street_address" size="45" value="<?php echo zen_db_output($order->delivery['street_address']); ?>" <?php echo $max_street_address_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_SUBURB; ?>:&nbsp;</td>
-                                <td><input name="update_customer_suburb" size="45" value="<?php echo zen_db_output($order->customer['suburb']); ?>" <?php echo $max_suburb_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_SUBURB; ?>:&nbsp;</td>
-                                <td><input name="update_billing_suburb" size="45" value="<?php echo zen_db_output($order->billing['suburb']); ?>" <?php echo $max_suburb_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_SUBURB; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_suburb" size="45" value="<?php echo zen_db_output($order->delivery['suburb']); ?>" <?php echo $max_suburb_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_CITY; ?>:&nbsp;</td>
-                                <td><input name="update_customer_city" size="45" value="<?php echo zen_db_output($order->customer['city']); ?>" <?php echo $max_city_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_CITY; ?>:&nbsp;</td>
-                                <td><input name="update_billing_city" size="45" value="<?php echo zen_db_output($order->billing['city']); ?>" <?php echo $max_city_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_CITY; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_city" size="45" value="<?php echo zen_db_output($order->delivery['city']); ?>" <?php echo $max_city_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_STATE; ?>:&nbsp;</td>
-                                <td><input name="update_customer_state" size="45" value="<?php echo zen_db_output($order->customer['state']); ?>" <?php echo $max_state_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_STATE; ?>:&nbsp;</td>
-                                <td><input name="update_billing_state" size="45" value="<?php echo zen_db_output($order->billing['state']); ?>" <?php echo $max_state_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_STATE; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_state" size="45" value="<?php echo zen_db_output($order->delivery['state']); ?>" <?php echo $max_state_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_POSTCODE; ?>:&nbsp;</td>
-                                <td><input name="update_customer_postcode" size="45" value="<?php echo zen_db_output($order->customer['postcode']); ?>" <?php echo $max_postcode_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_POSTCODE; ?>:&nbsp;</td>
-                                <td><input name="update_billing_postcode" size="45" value="<?php echo zen_db_output($order->billing['postcode']); ?>" <?php echo $max_postcode_length; ?>></td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_POSTCODE; ?>:&nbsp;</td>
-                                <td><input name="update_delivery_postcode" size="45" value="<?php echo zen_db_output($order->delivery['postcode']); ?>" <?php echo $max_postcode_length; ?>></td>
-                            </tr>
-                            <tr>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COUNTRY; ?>:&nbsp;</td>
-                                <td>
-<?php
-    if (is_array($order->customer['country']) && isset($order->customer['country']['id'])) {
-        echo zen_get_country_list('update_customer_country', $order->customer['country']['id']);
-    } else {
-        echo '<input name="update_customer_country" size="45" value="' . zen_db_output($order->customer['country']) . '"' . $max_country_length . '">';
-    } 
-?>
-                                </td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COUNTRY; ?>:&nbsp;</td>
-                                <td>
-<?php
-    if (is_array($order->billing['country']) && isset($order->billing['country']['id'])) {
-        echo zen_get_country_list('update_billing_country', $order->billing['country']['id']);
-    } else {
-        echo '<input name="update_billing_country" size="45" value="' . zen_db_output($order->billing['country']) . '"' . $max_country_length . '">';
-    } 
-?>
-                                </td>
-                                <td class="eo-label"><?php echo ENTRY_CUSTOMER_COUNTRY; ?>:&nbsp;</td>
-                                <td>
-<?php
-    if (is_array($order->delivery['country']) && isset($order->delivery['country']['id'])) {
-        echo zen_get_country_list('update_delivery_country', $order->delivery['country']['id']);
-    } else {
-        echo '<input name="update_delivery_country" size="45" value="' . zen_db_output($order->delivery['country']) . '"' . $max_country_length . '">';
-    } 
-?>
-                                </td>
-                            </tr>
-<?php
+    // -----
+    // Starting with EO v4.5.0, a store can indicate the display-order for the order-related addresses.  Rather
+    // than including all that code here, we'll use a separate 'module' to display the Customer-Shipping-Billing vs.
+    // Customer-Billing-Shipping version.
+    //
+    $module_name = (EO_ADDRESSES_DISPLAY_ORDER == 'CBS') ? 'eo_addresses_cbs.php' : 'eo_addresses_csb.php';
+    require DIR_WS_MODULES . 'edit_orders/' . $module_name;
+    
+    // -----
+    // Give a watching observer the chance to inject some additional, per-address-type, information.
+    //
     $additional_rows = '';
     $zco_notifier->notify('EDIT_ORDERS_ADDITIONAL_ADDRESS_ROWS', $order, $additional_rows);
     echo $additional_rows;
@@ -1257,32 +1191,6 @@ if ($action == 'edit') {
     $model_parms = 'maxlength="' . zen_field_length(TABLE_ORDERS_PRODUCTS, 'products_model') . '" class="eo-name"';
     
     // -----
-    // A store can override EO's application of the 'type="number"' parameters by adding the definition
-    //
-    // define('EDIT_ORDERS_USE_NUMERIC_FIELDS', '0');
-    //
-    // to a site-specific /admin/extra_datafiles module.
-    //
-    // Note that EO's rendering of input fields is (currently) a mixture of directly-coded <input /> tags
-    // and inputs generated via zen_draw_input_field.  The variables set below that start with $input_ are
-    // used on the function-call field-generation and the others are used when directly-coded.
-    //
-    if (!defined('EDIT_ORDERS_USE_NUMERIC_FIELDS')) define('EDIT_ORDERS_USE_NUMERIC_FIELDS', '1');
-    if (EDIT_ORDERS_USE_NUMERIC_FIELDS != '1') {
-        $input_value_parms = '';
-        $input_tax_parms = '';
-        $value_parms = '';
-        $tax_parms = '';
-        $input_field_type = 'text';
-    } else {
-        $input_value_parms = ' min="0" step="any"';
-        $input_tax_parms = ' min="0" max="100" step="any"';
-        $value_parms = $input_value_parms . ' type="number"';
-        $tax_parms = $input_tax_parms . ' type="number"';
-        $input_field_type = 'number';
-    }
-    
-    // -----
     // Loop through each of the products in the order.
     //
     $orders_products_id_mapping = eo_get_orders_products_id_mappings((int)$oID);
@@ -1360,7 +1268,7 @@ if ($action == 'edit') {
                 // attributes) previously, there's nothing to be selected for its to-be-displayed
                 // value.
                 //
-                $orders_products_attributes_id = (!in_array($option_id, $selected_attributes_id_mapping)) ? array() : $selected_attributes_id_mapping[$option_id];
+                $orders_products_attributes_id = (!array_key_exists($option_id, $selected_attributes_id_mapping)) ? array() : $selected_attributes_id_mapping[$option_id];
                 
                 $option_type = $optionInfo['type'];
                 $option_type_hidden_field = zen_draw_hidden_field("update_products[$orders_products_id][attr][$option_id][type]", $option_type);
@@ -1839,7 +1747,7 @@ if ($action == 'edit') {
                     // If the current field name is not present in the orders_status_history
                     // table, there's nothing to do.
                     //
-                    if (!isset($orders_history->fields[$field_name])) {
+                    if (!array_key_exists($field_name, $orders_history->fields)) {
                         continue;
                     }
                     

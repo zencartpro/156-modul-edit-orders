@@ -139,5 +139,5 @@ define('EO_MESSAGE_ORDER_UPDATED', 'The order was updated via "Edit Orders". ');
 define('EO_MESSAGE_PRODUCT_ADDED', 'Added %1$s x "%2$s" to the order');   //-%1$s: The product quantity, %2$s: The product name
 define('EO_MESSAGE_ATTRIBS_ADDED', ', with options (%s)');
 
-define('EO_SHIPPING_TAX_DESCRIPTION', 'included tax %s%%');
+define('EO_SHIPPING_TAX_DESCRIPTION', 'included tax (%s%%)');
 define('EO_FREE_SHIPPING', 'Free Shipping');

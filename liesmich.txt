@@ -1,4 +1,4 @@
-Edit Orders 4.4.4 für Zen Cart 1.5.6 deutsch
+Edit Orders 4.5.0 für Zen Cart 1.5.6 deutsch
 
 Mit dieser Erweiterung können Bestellungen nachträglich bearbeitet werden.
 z.B.
@@ -8,7 +8,29 @@ Attribute eines bestellten Artikels ändern
 Versandart / Versandkosten einer Bestellung ändern
 Aktionskupons/Gutscheine hinzufügen
 
-Die Version 4.4.4 ist eine starke Weiterentwicklung gegenüber früheren Edit Orders Versionen.
+Die Version 4.5.0 ist eine starke Weiterentwicklung gegenüber früheren Edit Orders Versionen.
+
+Changelog 4.5.0 gegenüber 4.4.4
+Bugfixes für
+- diverse PHP Notice Logs
+- Bei der Erstanzeige einer Bestellung war die Anzeige der Attribute nicht korrekt
+- Zusätzliche Einträge in der Bestellhistorie wurden nicht immer korrekt erkannt
+Neue Funktion:
+- Anzeigereihenfolge der 3 Adressen per Admin steuerbar
+
+  
+Geänderte Dateien in 4.5.0 gegenüber 4.4.4
+/DEINADMIN/edit_orders.php
+/DEINADMIN/includes/classes/editOrders.php
+/DEINADMIN/includes/init_includes/init_eo_config.php
+
+Neue Dateien in 4.5.0 gegenüber 4.4.4
+/DEINADMIN/includes/modules/edit_orders/eo_addresses_cbs.php
+/DEINADMIN/includes/modules/edit_orders/eo_addresses_csb.php
+
+Wer bereits Edit Orders 4.4.4 verwendet, kann auf 4.5.0 aktualisieren, indem die drei geänderten und zwei neuen Dateien hochgeladen werden.
+Wer eine ältere Version als 4.4.4 oder noch gar kein Edit Orders verwendet, entfernt bitte Edit Orders komplett und führt eine Neuinstallation des Moduls durch.
+
 
 Dieses Modul keinesfalls direkt in einem Liveshop einbauen!
 Erst in einem Testshop die Änderungsfunktionen testen und dann entscheiden, welche davon überhaupt für den Shop sinnvoll verwendbar sind.
@@ -19,8 +41,8 @@ Wenn eine Bestellung wie bisher ganz normal bearbeitet werden soll (z.B. um sie 
 Wenn Sie nur die Adressdaten einer Bestellung ändern wollen, dann ebenfalls nicht Edit Orders verwenden, sondern die ganz normale Adresskorrektur!
 "Mit Edit Orders Bearbeiten" nur dann verwenden, wenn an der Bestellung wirklich etwas grundlegend geändert werden soll!
 
-Sollte im Shop bereits eine ältere Version von Edit Orders verwendet werden, diese vor der Installation von 4.4.4 komplett entfernen!
-Die Steuerberechnung wurde in Version 4.4.4 völlig neu gestaltet und gegenüber früheren Versionen extrem verbessert.
+Sollte im Shop bereits eine ältere Version von Edit Orders als 4.4.4 verwendet werden, diese vor der Installation von 4.5.0 komplett entfernen!
+Die Steuerberechnung wurde in Version 4.5.0 völlig neu gestaltet und gegenüber früheren Versionen extrem verbessert.
 Dennoch:
 Die besten Ergebnisse im Hinblick auf eine korrekte Steuerausweisung werden dann erreicht, wenn es keine unterschiedlichen Steuersätze bei den Artikeln gibt und wenn es sich um einen B2B Shop handelt (Shop verwendet Nettopreise)
 Eine 100% korrekte Steuerausweisung bei geänderten Bestellungen in anderen Szenarien kann nicht garantiert werden, daher dieses Modul unbedingt erst in einem Testshop auf Eignung für den eigenen Shop überprüfen!

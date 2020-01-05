@@ -2,13 +2,13 @@
 // -----
 // Admin-level initialization script for the Edit Orders plugin for Zen Cart, by lat9.
 // Copyright (C) 2018-2019, Vinos de Frutas Tropicales.
-// modified for Zen Cart German 2019-10-17 14:42:05 webchills
+// modified for Zen Cart German 2020-01-05 08:42:05 webchills
 //
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
-define('EO_CURRENT_VERSION', '4.4.4');
+define('EO_CURRENT_VERSION', '4.5.0');
 
 // -----
 // Only update configuration when an admin is logged in.
@@ -252,21 +252,34 @@ if (EO_VERSION != EO_CURRENT_VERSION) {
                     
                     ('Status-update: Customer Notification Default', 'EO_CUSTOMER_NOTIFICATION_DEFAULT', 'No Email', 'Choose the default used for the radio-buttons that identify whether the customer receives notification when a  comment is added to the order.', $cgi, 40, now(), NULL, 'zen_cfg_select_option(array(\'Email\', \'No Email\', \'Hidden\'),')"
             );
-            
              $db->Execute (
             "REPLACE INTO " . TABLE_CONFIGURATION_LANGUAGE . " 
              (configuration_title, configuration_key, configuration_language_id, configuration_description, last_modified, date_added)
              VALUES 
-            ('Anzeigereihenfolge in der Bestellhistorie', 'EO_STATUS_HISTORY_DISPLAY_ORDER', '43', 'Wählen Sie die Art und Weise, wie Edit Orders die Einträge in der Bestellhistorie anzeigt, entweder aufsteigend ältestete zuerst (Asc) oder absteigend neueste zuerst (Desc).', now(), now())"
+            ('Status Historie, Anzeigereihenfolge', 'EO_STATUS_HISTORY_DISPLAY_ORDER', '43', 'Wie soll <em>Edit Orders</em> die Bestellstatus Historie Einträge einer Bestellung anzeigen? Nach Erstelldatum aufsteigend (<b>Asc</b>) oder absteigend (<b>Desc</b>)?.', now(), now())"
         );
-        
-        $db->Execute (
+         $db->Execute (
             "REPLACE INTO " . TABLE_CONFIGURATION_LANGUAGE . " 
              (configuration_title, configuration_key, configuration_language_id, configuration_description, last_modified, date_added)
              VALUES 
-            ('Bestellstatus Update - Kundenbenachrichtigung', 'EO_CUSTOMER_NOTIFICATION_DEFAULT', '43', 'Wählen Sie den Standard für die Radiobuttons, die festlegen, ob der Kunde eine Benachrichtigung erhält, wenn ein Kommentar zur Bestellung hinzugefügt wird.', now(), now())"
-            );
+            ('Status Update, Kundenbenachrichtigung', 'EO_CUSTOMER_NOTIFICATION_DEFAULT', '43', 'Was soll voreingestellt sein? Email, keine Email oder versteckt?<br/>Empfohlen ist die Voreinstellung No Email zu lassen.', now(), now())"
+        );
             $check_init_file_missing = '1';
+                                                //-Fall-through for additional checks
+        case (version_compare(EO_VERSION, '4.5.0', '<')):
+            $default_value = (EO_VERSION == '0.0.0') ? 'CSB' : 'CBS';
+            $db->Execute(
+                "INSERT IGNORE INTO " . TABLE_CONFIGURATION . " 
+                    (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function) 
+                 VALUES 
+                    ('Addresses, Display Order', 'EO_ADDRESSES_DISPLAY_ORDER', '$default_value', 'In what order, left-to-right, should <em>Edit Orders</em> display an order\'s addresses?  Choose <b>CSB</b> to display <em>Customer</em>, <em>Shipping</em> and then <em>Billing</em>; choose <b>CBS</b> to display <em>Customer</em>, <em>Billing</em> and then <em>Shipping</em>.', $cgi, 1, now(), NULL, 'zen_cfg_select_option(array(\'CSB\', \'CBS\'),')"
+            );
+	    $db->Execute (
+            "REPLACE INTO " . TABLE_CONFIGURATION_LANGUAGE . " 
+             (configuration_title, configuration_key, configuration_language_id, configuration_description, last_modified, date_added)
+             VALUES 
+            ('Adressen, Anzeigereihenfolge', 'EO_ADDRESSES_DISPLAY_ORDER', '43', 'In welcher Reihenfolge von links nach rechts soll <em>Edit Orders</em> die Adressen einer Bestellung anzeigen?  Wählen Sie <b>CSB</b> für die Anzeige <em>Kundenadresse</em>, <em>Lieferdresse</em> und dann <em>Rechnungsadresse</em>; Wählen Sie <b>CBS</b> für die Anzeige <em>Kundenadresse</em>, <em>Rechnungsadresse</em> und dann <em>Lieferadresse</em>.', now(), now())"
+        );
                                                 //-Fall-through for additional checks
 
         default:

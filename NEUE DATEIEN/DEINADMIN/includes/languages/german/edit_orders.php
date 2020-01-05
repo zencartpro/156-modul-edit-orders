@@ -17,12 +17,12 @@ define('TABLE_HEADING_PRODUCTS', 'Artikel');
 define('TABLE_HEADING_TAX', 'Steuer');
 define('TABLE_HEADING_TOTAL', 'Gesamt');
 define('TABLE_HEADING_UNIT_PRICE', 'Einzelpreis');
-define('TABLE_HEADING_UNIT_PRICE_NET', 'Unit Price (Net)');
-define('TABLE_HEADING_UNIT_PRICE_GROSS', 'Unit Price (Gross)');
+define('TABLE_HEADING_UNIT_PRICE_NET', 'Einzelpreis (Netto)');
+define('TABLE_HEADING_UNIT_PRICE_GROSS', 'Einzelpreis (Brutto)');
 define('TABLE_HEADING_TOTAL_PRICE', 'Gesamtpreis');
 define('TABLE_HEADING_CUSTOMER_NOTIFIED', 'Kunde benachrichtigt');
 define('TABLE_HEADING_DATE_ADDED', 'hinzugefügt am');
-define('TABLE_HEADING_UPDATED_BY', 'Updated By');
+define('TABLE_HEADING_UPDATED_BY', 'aktualisiert von');
 // Order Address Entries
 define('ENTRY_CUSTOMER', 'Adresse des Kunden:');
 define('ENTRY_CUSTOMER_NAME', 'Name');
@@ -43,7 +43,7 @@ define('ENTRY_CREDIT_CARD_NUMBER', 'Credit Card Number:');
 define('ENTRY_CREDIT_CARD_EXPIRES', 'Credit Card Expires:');
 define('ENTRY_UPDATE_TO_CC', 'Geben Sie <strong>Credit Card</strong> ein um das CC Feld zu sehen.');
 define('ENTRY_UPDATE_TO_CK', 'Geben Sie die Zahlungsart dieser Bestellung ein, um das CC Feld auszublenden. (<strong>PayPal, Check/Money Order, Western Union, etc</strong>)');
-define('ENTRY_PURCHASE_ORDER_NUMBER', 'Purchase Order:');
+define('ENTRY_PURCHASE_ORDER_NUMBER', 'Bestellnummer:');
 // Order Status Entries
 define('ENTRY_STATUS', 'Status:');
 define('ENTRY_CURRENT_STATUS', 'Aktueller Status: ');
@@ -73,7 +73,7 @@ define('WARNING_ORDER_NOT_UPDATED', 'WARNUNG: Es gab nichts zu ändern. Bestellu
 define('WARNING_ORDER_QTY_OVER_MAX', 'WARNUNG: Die eingegebene Menge hat die maximal mögliche für eine Bestellung überschritten. Die Menge wurde auf die maximal zulässige geändert.');
 define('WARNING_ORDER_COUPON_BAD', 'WARNUNG: Der Aktionskuponcode wurde in der Datenbank nicht gefunden. Hinweis: Titel / Text eines Aktionskupons sehen normalerweise so aus: &quot;Discount Coupon : coupon_code :&quot;. ');
 define('WARNING_INSUFFICIENT_PRODUCT_STOCK', 'Unzureichender Lagerbestand für <em>%1$s</em>, angefordert %2$s mit nur %3$s verfügbar.');
-define('ERROR_ZEN_ADD_TAX_ROUNDING', "The store's <code>zen_add_tax</code> function must be updated to enable <em>Edit Orders</em>' use.");
+define('ERROR_ZEN_ADD_TAX_ROUNDING', "Die <code>zen_add_tax</code> Funktion muss aktualisiert werden, damit Edit Orders funktioniert. Nehmen Sie die in der Anleitung beschriebene Änderung vor.");
 define ('ERROR_ZC155_NO_SANITIZER', 'You must install the Zen Cart 1.5.5 <em>AdminRequestSanitizer</em> class before you can use Edit Orders on this site.');
 // Product & Attribute Display
 define('TEXT_ATTRIBUTES_ONE_TIME_CHARGE', 'Einmalige Gebühren: &nbsp;&nbsp;');
