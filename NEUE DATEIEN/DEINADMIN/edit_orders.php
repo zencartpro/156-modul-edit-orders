@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2020 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/3_0.txt GNU Public License V3.0
- * @version $Id: edit_orders.php ZC156DE 2020-01-05 08:46:51Z webchills $
+ * @version $Id: edit_orders.php ZC156DE 2020-07-30 16:46:51Z webchills $
  */
   
 
@@ -1560,7 +1560,9 @@ if ($action == 'edit') {
         }
     }
     
+    $additional_totals_displayed = false;
     if (count(eo_get_available_order_totals_class_values($oID)) > 0) { 
+        $additional_totals_displayed = true;
 ?>
                             <tr>
                                 <td colspan="<?php echo $columns; ?>">&nbsp;</td>
@@ -2198,6 +2200,10 @@ if ($action == "add_prdct") {
 </table>
 <?php
 }
+// -----
+// Include id-specific javascript only if the associated blocks have been rendered.
+//
+if ($additional_totals_displayed) {
 ?>
 <!-- body_text_eof //-->
 <script>
@@ -2215,6 +2221,7 @@ if ($action == "add_prdct") {
 </script>
 <!-- body_eof //-->
 <?php
+}
 if (DISPLAY_PRICE_WITH_TAX == 'true') {
 ?>
 <script>

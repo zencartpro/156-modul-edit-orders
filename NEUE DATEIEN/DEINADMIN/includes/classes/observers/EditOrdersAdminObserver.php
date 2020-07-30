@@ -1,8 +1,8 @@
 <?php
 // -----
 // Admin-level observer class, adds "Edit Orders" buttons and links to Customers->Orders processing.
-// Copyright (C) 2017-2019, Vinos de Frutas Tropicales.
-// modified for Zen Cart German 2019-10-07 webchills
+// Copyright (C) 2017-2020, Vinos de Frutas Tropicales.
+// modified for Zen Cart German 2020-07-30 webchills
 
 
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
@@ -109,10 +109,15 @@ class EditOrdersAdminObserver extends base
             // $p3 ... A reference to the module's $shipping_tax value.
             // $p4 ... A reference to the module's $shipping_tax_description string.
             //
+            // Final Note: The ot_shipping module is actually loaded twice, first to get its sort-order and next
+            // to record its values in the database.  So that we don't double-up any shipping taxes, once those
+            // taxes (if any) are applied to the order, we'll 'detach' from watching further issuances of this notification.
+            //
             case 'NOTIFY_OT_SHIPPING_TAX_CALCS':
                 if ($this->isEditOrdersPage) {
                     $GLOBALS['eo']->eoUpdateOrderShippingTax($p2, $p3, $p4);
                     $p2 = true;
+                    $this->detach($this, array('NOTIFY_OT_SHIPPING_TAX_CALCS'));
                 }
                 break;
                 

@@ -1,7 +1,7 @@
 <?php
 // -----
 // Part of the Edit Orders plugin (v4.1.6 and later) by lat9 (lat9@vinosdefrutastropicales.com).
-// Copyright (C) 2016-2019, Vinos de Frutas Tropicales
+// Copyright (C) 2016-2020, Vinos de Frutas Tropicales
 //
 if (!defined('EO_DEBUG_TAXES_ONLY')) define('EO_DEBUG_TAXES_ONLY', 'false');  //-Either 'true' or 'false'
 class editOrders extends base
@@ -253,7 +253,7 @@ class editOrders extends base
         }
         switch ($action) {
             case 'update_order':
-                $this->shipping_tax_rate = $_POST['shipping_tax'];
+                $this->shipping_tax_rate = is_numeric($_POST['shipping_tax']) ? $_POST['shipping_tax'] : 0;
                 $order->info['shipping_tax'] = $this->calculateOrderShippingTax(true);
                 break;
             case 'add_prdct':

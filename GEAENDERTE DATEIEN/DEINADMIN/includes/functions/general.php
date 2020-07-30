@@ -2,10 +2,10 @@
 /**
  * Zen Cart German Specific
  * @package admin
- * @copyright Copyright 2003-2019 Zen Cart Development Team
+ * @copyright Copyright 2003-2020 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: general.php for Edit Orders 2019-09-13 19:02:33Z webchills $
+ * @version $Id: general.php for Edit Orders 2020-07-30 16:57:33Z webchills $
  */
 
 ////
@@ -1682,7 +1682,7 @@ while (!$chk_sale_categories_all->EOF) {
  * Calculates Tax rounding the result
  */
   function zen_calculate_tax($price, $tax) {
-    return $price * $tax / 100;
+    return (float)$price * (int)$tax / 100;
   }  
   
 
@@ -2544,12 +2544,6 @@ function zen_limit_image_filename($filename, $table_name, $field_name, $extensio
     }
   }
 
-/**
- * Check if restricted-use demo mode is active
- */
-  function zen_admin_demo() {
-    return (ADMIN_DEMO == '1') ? TRUE : FALSE;
-  }
 
 
   function zen_has_product_attributes_downloads($products_id, $check_valid=false) {
