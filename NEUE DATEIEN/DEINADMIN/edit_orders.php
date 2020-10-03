@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2020 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/3_0.txt GNU Public License V3.0
- * @version $Id: edit_orders.php ZC156DE 2020-07-30 16:46:51Z webchills $
+ * @version $Id: edit_orders.php ZC156DE 2020-10-03 20:03:51Z webchills $
  */
   
 
@@ -506,7 +506,7 @@ switch ($action) {
             );
 
             foreach ($_POST['update_total'] as $order_total) {
-                $order_total['value'] = (float)$order_total['value'];
+                $order_total['value'] = floatval($order_total['value']);
                 $order_total['text'] = $eo->eoFormatCurrencyValue($order_total['value']);
                 $order_total['sort_order'] = $eo->eoGetOrderTotalSortOrder($order_total['code']);
 
@@ -832,6 +832,7 @@ if ($action == 'edit') {
         }
     }
 // BEGIN - Add Super Orders Order Navigation Functionality
+    if  ((PROJECT_VERSION_MAJOR . '.' . PROJECT_VERSION_MINOR) < '1.5.6') {
     $get_prev = $db->Execute(
         "SELECT orders_id 
            FROM " . TABLE_ORDERS . " 
@@ -874,6 +875,9 @@ if ($action == 'edit') {
     echo $prev_button . '&nbsp;&nbsp;' . SELECT_ORDER_LIST . '&nbsp;&nbsp;';
     echo zen_draw_form('input_oid', FILENAME_ORDERS, 'action=edit', 'get', '', true) . zen_draw_input_field('oID', '', 'size="6"') . '</form>';
     echo '&nbsp;&nbsp;' . $next_button . '<br />';
+    } else {
+        $eo->orderNavigation($oID);
+    }
 ?>
                 </td>
             </tr>
@@ -884,8 +888,9 @@ if ($action == 'edit') {
                         <td class="pageHeading"><?php echo HEADING_TITLE; ?> #<?php echo $oID; ?></td>
                         <td class="pageHeading a-r"><?php echo zen_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></td>
                         <td class="pageHeading a-r">
-                            <a href="<?php echo zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action'))); ?>"><?php echo zen_image_button('button_back.gif', IMAGE_BACK); ?></a>
-                            <a href="<?php echo zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . "oID=$oID&amp;action=edit"); ?>"><?php echo zen_image_button('button_details.gif', IMAGE_ORDER_DETAILS); ?></a>
+                            <?php
+                            $eo->backDetails($oID)
+                            ?>
                         </td>
                     </tr>
                 </table></td>
@@ -957,11 +962,11 @@ if ($action == 'edit') {
                         <td><table class="eo-pad">
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_TELEPHONE_NUMBER; ?></td>
-                                <td class="main"><input name="update_customer_telephone" size="15" value="<?php echo zen_db_output($order->customer['telephone']); ?>" <?php echo $max_telephone_length; ?>></td>
+                                <td class="main"><input name="update_customer_telephone" size="15" value="<?php echo zen_output_string_protected($order->customer['telephone']); ?>" <?php echo $max_telephone_length; ?>></td>
                             </tr>
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_EMAIL_ADDRESS; ?></td>
-                                <td class="main"><input name="update_customer_email_address" size="35" value="<?php echo zen_db_output($order->customer['email_address']); ?>" <?php echo $max_email_length; ?>></td>
+                                <td class="main"><input name="update_customer_email_address" size="35" value="<?php echo zen_output_string_protected($order->customer['email_address']); ?>" <?php echo $max_email_length; ?>></td>
                             </tr>
 <?php
     if (is_array($additional_contact_info) && count($additional_contact_info) != 0) {
@@ -993,7 +998,7 @@ if ($action == 'edit') {
                         <td><table class="eo-pad">
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_PAYMENT_METHOD; ?></td>
-                                <td class="main"><input name="update_info_payment_method" size="20" value="<?php echo zen_db_output($order->info['payment_method']); ?>" <?php echo $max_payment_length; ?>> <?php echo ($order->info['payment_method'] != 'Credit Card') ? ENTRY_UPDATE_TO_CC : ENTRY_UPDATE_TO_CK; ?></td>
+                                <td class="main"><input name="update_info_payment_method" size="20" value="<?php echo zen_output_string_protected($order->info['payment_method']); ?>" <?php echo $max_payment_length; ?>> <?php echo ($order->info['payment_method'] != 'Credit Card') ? ENTRY_UPDATE_TO_CC : ENTRY_UPDATE_TO_CK; ?></td>
                             </tr>
 <?php 
     if (!empty($order->info['cc_type']) || !empty($order->info['cc_owner']) || $order->info['payment_method'] == "Credit Card" || !empty($order->info['cc_number'])) {
@@ -1008,19 +1013,19 @@ if ($action == 'edit') {
                             </tr>
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_CREDIT_CARD_TYPE; ?></td>
-                                <td class="main"><input name="update_info_cc_type" size="10" value="<?php echo zen_db_output($order->info['cc_type']); ?>" <?php echo $max_type_length; ?>></td>
+                                <td class="main"><input name="update_info_cc_type" size="10" value="<?php echo zen_output_string_protected($order->info['cc_type']); ?>" <?php echo $max_type_length; ?>></td>
                             </tr>
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_CREDIT_CARD_OWNER; ?></td>
-                                <td class="main"><input name="update_info_cc_owner" size="20" value="<?php echo zen_db_output($order->info['cc_owner']); ?>" <?php echo $max_owner_length; ?>></td>
+                                <td class="main"><input name="update_info_cc_owner" size="20" value="<?php echo zen_output_string_protected($order->info['cc_owner']); ?>" <?php echo $max_owner_length; ?>></td>
                             </tr>
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_CREDIT_CARD_NUMBER; ?></td>
-                                <td class="main"><input name="update_info_cc_number" size="20" value="<?php echo zen_db_output($order->info['cc_number']); ?>" <?php echo $max_number_length; ?>></td>
+                                <td class="main"><input name="update_info_cc_number" size="20" value="<?php echo zen_output_string_protected($order->info['cc_number']); ?>" <?php echo $max_number_length; ?>></td>
                             </tr>
                             <tr>
                                 <td class="main eo-label"><?php echo ENTRY_CREDIT_CARD_EXPIRES; ?></td>
-                                <td class="main"><input name="update_info_cc_expires" size="4" value="<?php echo zen_db_output($order->info['cc_expires']); ?>" <?php echo $max_expires_length; ?>></td>
+                                <td class="main"><input name="update_info_cc_expires" size="4" value="<?php echo zen_output_string_protected($order->info['cc_expires']); ?>" <?php echo $max_expires_length; ?>></td>
                             </tr>
 <!-- End Credit Card Info Block -->
 <?php 
@@ -1040,7 +1045,7 @@ if ($action == 'edit') {
 ?>
                             <tr>
                                 <td class="main"><?php echo ENTRY_ACCOUNT_NAME; ?></td>
-                                <td class="main"><?php echo zen_db_output($order->info['account_name']); ?></td>
+                                <td class="main"><?php echo zen_output_string_protected($order->info['account_name']); ?></td>
                             </tr>
 <?php
         }
@@ -1048,7 +1053,7 @@ if ($action == 'edit') {
 ?>
                             <tr>
                                 <td class="main"><?php echo ENTRY_ACCOUNT_NUMBER; ?></td>
-                                <td class="main"><?php echo zen_db_output($order->info['account_number']); ?></td>
+                                <td class="main"><?php echo zen_output_string_protected($order->info['account_number']); ?></td>
                             </tr>
 <?php
         }
@@ -1056,7 +1061,7 @@ if ($action == 'edit') {
 ?>
                             <tr>
                                 <td class="main"><strong><?php echo ENTRY_PURCHASE_ORDER_NUMBER; ?></strong></td>
-                                <td class="main"><?php echo zen_db_output($order->info['po_number']); ?></td>
+                                <td class="main"><?php echo zen_output_string_protected($order->info['po_number']); ?></td>
                             </tr>
 <?php
         }
@@ -1107,7 +1112,13 @@ if ($action == 'edit') {
 
     $additional_inputs = '';
     $zco_notifier->notify('EDIT_ORDERS_FORM_ADDITIONAL_INPUTS', $order, $additional_inputs);
-    echo zen_image_submit('button_update.gif', IMAGE_UPDATE, 'name="update_button"') . "&nbsp;$reset_totals_block&nbsp;$payment_calc_choice$additional_inputs";
+    if  ((PROJECT_VERSION_MAJOR . '.' . PROJECT_VERSION_MINOR) >= '1.5.6') {
+    ?>
+                            <input type="submit" class="btn btn-danger" value="<?php echo IMAGE_UPDATE; ?>" >
+                        <?php echo "&nbsp;$reset_totals_block&nbsp;$payment_calc_choice$additional_inputs";
+    } else {
+        echo zen_image_submit('button_update.gif', IMAGE_UPDATE, 'name="update_button"') . "&nbsp;$reset_totals_block&nbsp;$payment_calc_choice$additional_inputs";
+    }
 //-eof-20180323-lat9
 ?>
                         </td>
@@ -1248,7 +1259,7 @@ if ($action == 'edit') {
 ?>
                                 <td class="dataTableContent a-c"><input class="eo-qty" name="update_products[<?php echo $orders_products_id; ?>][qty]" value="<?php echo zen_db_prepare_input($order->products[$i]['qty']); ?>" <?php echo $value_parms; ?> /></td>
                                 <td>&nbsp;X&nbsp;</td>
-                                <td class="dataTableContent"><input name="update_products[<?php echo $orders_products_id; ?>][name]" value="<?php echo zen_db_output($order->products[$i]['name']); ?>" <?php echo $name_parms; ?> />
+                                <td class="dataTableContent"><input name="update_products[<?php echo $orders_products_id; ?>][name]" value="<?php echo zen_output_string_protected($order->products[$i]['name']); ?>" <?php echo $name_parms; ?> />
 <?php
         if (isset($order->products[$i]['attributes']) && count($order->products[$i]['attributes']) > 0) { 
 ?>
@@ -1346,7 +1357,7 @@ if ($action == 'edit') {
                         if ($text === null) {
                             $text = '';
                         }
-                        $text = zen_db_output($text);
+                        $text = zen_output_string_protected($text);
                         $option_html_id = "opid-$orders_products_id-oid-$option_id";
                         $option_input_name = "update_products[$orders_products_id][attr][$option_id][value]";
                         $option_rows = $optionInfo['rows'];
@@ -1393,7 +1404,7 @@ if ($action == 'edit') {
             $final_price = $order->products[$i]['final_price'];
             $onetime_charges = $order->products[$i]['onetime_charges'];
         } else {
-            $final_price = $eo->eoRoundCurrencyValue($order->products[$i]['final_price']);
+            $final_price = $order->products[$i]['final_price'];
             $onetime_charges = $eo->eoRoundCurrencyValue($order->products[$i]['onetime_charges']);
         }
         $data_index = " data-opi=\"$orders_products_id\"";
@@ -1423,8 +1434,11 @@ if ($action == 'edit') {
 <?php
     $eo_href_link = zen_href_link(FILENAME_EDIT_ORDERS, zen_get_all_get_params(array('oID', 'action')) . "oID=$oID&amp;action=add_prdct");
     $eo_add_product_button = zen_image_button('button_add_product.gif', TEXT_ADD_NEW_PRODUCT);
-    $eo_add_button_link = '<a href="' . $eo_href_link . '">' . $eo_add_product_button . '</a>';
-    
+    if  ((PROJECT_VERSION_MAJOR . '.' . PROJECT_VERSION_MINOR) < '1.5.6') {
+        $eo_add_button_link = '<a href="' . $eo_href_link . '">' . $eo_add_product_button . '</a>';
+    } else {
+        $eo_add_button_link = '<a href="' . $eo_href_link . '" class="btn btn-warning " role="button">' . TEXT_ADD_NEW_PRODUCT . '</a>';
+    }
     // -----
     // Give a watching observer the chance to identify additional order-totals that should be considered display-only.
     //
@@ -1622,7 +1636,7 @@ if ($action == 'edit') {
                                 <td class="smallText a-c"><?php echo $icon_image; ?></td>
                                 <td class="smallText"><?php echo $orders_status_array[$orders_history->fields['orders_status_id']]; ?></td>
 
-                                <td class="smallText"><?php echo nl2br(zen_db_output($orders_history->fields['comments'])); ?></td>
+                                <td class="smallText"><?php echo nl2br(zen_output_string_protected($orders_history->fields['comments'])); ?></td>
                             </tr>
 <?php
                 $orders_history->MoveNext();
@@ -1776,7 +1790,7 @@ if ($action == 'edit') {
                                     $display_value = $orders_status_array[$field_value];
                                     break;
                                 case 'comments':
-                                    $display_value = nl2br(zen_db_output($field_value));
+                                    $display_value = nl2br(zen_output_string_protected($field_value));
                                     break;
                                 case 'updated_by':
                                     $display_value = $field_value;
@@ -1899,7 +1913,17 @@ if ($action == 'edit') {
                     </tr>
 
                     <tr>
-                        <td valign="top"><?php echo zen_image_submit('button_update.gif', IMAGE_UPDATE); ?></td>
+                        <td valign="top">
+                            <?php
+                            if ((PROJECT_VERSION_MAJOR . '.' . PROJECT_VERSION_MINOR) < '1.5.6') {
+                                echo zen_image_submit('button_update.gif', IMAGE_UPDATE);
+                            } else {
+                                ?>
+                                <input type="submit" class="btn btn-danger" value="<?php echo IMAGE_UPDATE; ?>">
+                                <?php
+                            }
+                            ?>
+                        </td>
                     </tr>
                 </table></form></td>
             </tr>
@@ -1919,8 +1943,9 @@ if ($action == "add_prdct") {
                 <td class="pageHeading"><?php echo HEADING_TITLE_ADD_PRODUCT; ?> #<?php echo $oID; ?></td>
                 <td class="pageHeading a-r"><?php echo zen_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></td>
                 <td class="pageHeading a-r">
-                    <a href="<?php echo zen_href_link(FILENAME_EDIT_ORDERS, $order_parms); ?>"><?php echo zen_image_button('button_back.gif', IMAGE_EDIT); ?></a>
-                    <a href="<?php echo zen_href_link(FILENAME_ORDERS, $order_parms); ?>"><?php echo zen_image_button('button_details.gif', IMAGE_ORDER_DETAILS); ?></a>
+                            <?php
+                            $eo->backDetails($oID)
+                            ?>
                 </td>
             </tr>
         </table></td>
@@ -2062,6 +2087,7 @@ if ($action == "add_prdct") {
                     case PRODUCTS_OPTIONS_TYPE_ATTRIBUTE_GRID:
                     case PRODUCTS_OPTIONS_TYPE_RADIO:
                     case PRODUCTS_OPTIONS_TYPE_SELECT:       
+                    case PRODUCTS_OPTIONS_TYPE_SELECT_SBA:
 ?>
                     <label class="attribsSelect" for="<?php echo $attrib_id; ?>"><?php echo $option_name; ?></label>
 <?php
@@ -2099,7 +2125,7 @@ if ($action == "add_prdct") {
                         
                     case PRODUCTS_OPTIONS_TYPE_TEXT:
                         $text = (isset($_POST['id'][$optionID]['value']) ? $_POST['id'][$optionID]['value'] : '');
-                        $text = zen_db_output($text);
+                        $text = zen_output_string_protected($text);
 ?>
                     <label class="attribsInput" for="<?php echo $attrib_id; ?>"><?php echo $option_name; ?></label>
 <?php
@@ -2175,14 +2201,14 @@ if ($action == "add_prdct") {
                     foreach ($value as $id2 => $value2) {
                         if (is_array($value2)) {
                             foreach ($value2 as $id3 => $value3) {
-                                echo zen_draw_hidden_field('id[' . $id . '][' . $id2 . '][' . $id3 . ']', zen_db_output($value3));
+                                echo zen_draw_hidden_field('id[' . $id . '][' . $id2 . '][' . $id3 . ']', zen_output_string_protected($value3));
                             }
                         } else {
-                            echo zen_draw_hidden_field('id[' . $id . '][' . $id2 . ']', zen_db_output($value2));
+                            echo zen_draw_hidden_field('id[' . $id . '][' . $id2 . ']', zen_output_string_protected($value2));
                         }
                     }
                 } else {
-                    echo zen_draw_hidden_field('id[' . $id . ']', zen_db_output($value));
+                    echo zen_draw_hidden_field('id[' . $id . ']', zen_output_string_protected($value));
                 }
             }
         }
@@ -2203,7 +2229,7 @@ if ($action == "add_prdct") {
 // -----
 // Include id-specific javascript only if the associated blocks have been rendered.
 //
-if ($additional_totals_displayed) {
+if (!empty($additional_totals_displayed)) {
 ?>
 <!-- body_text_eof //-->
 <script>

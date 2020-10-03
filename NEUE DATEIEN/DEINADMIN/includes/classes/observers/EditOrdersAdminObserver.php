@@ -2,7 +2,7 @@
 // -----
 // Admin-level observer class, adds "Edit Orders" buttons and links to Customers->Orders processing.
 // Copyright (C) 2017-2020, Vinos de Frutas Tropicales.
-// modified for Zen Cart German 2020-07-30 webchills
+// modified for Zen Cart German 2020-10-03 webchills
 
 
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
@@ -109,15 +109,25 @@ class EditOrdersAdminObserver extends base
             // $p3 ... A reference to the module's $shipping_tax value.
             // $p4 ... A reference to the module's $shipping_tax_description string.
             //
-            // Final Note: The ot_shipping module is actually loaded twice, first to get its sort-order and next
-            // to record its values in the database.  So that we don't double-up any shipping taxes, once those
-            // taxes (if any) are applied to the order, we'll 'detach' from watching further issuances of this notification.
+            // Final Notes: 
+            // 1) The ot_shipping module is actually loaded twice, first to get its sort-order and next to record its
+            //    values in the database.  So that we don't double-up any shipping taxes, once those taxes (if any) 
+            //    are applied to the order, we'll 'detach' from watching further issuances of this notification.
+            // 2) The base EO processing doesn't instantiate the shipping method's class, so we'll install a fake one to indicate
+            //    that there's no tax on shipping.  That way, an admin can continue to override the shipping tax.  Previous
+            //    processing resulted in a PHP Notice from the ot_shipping class since its constructor is 'looking' to see
+            //    what tax-rate to apply.
             //
             case 'NOTIFY_OT_SHIPPING_TAX_CALCS':
                 if ($this->isEditOrdersPage) {
                     $GLOBALS['eo']->eoUpdateOrderShippingTax($p2, $p3, $p4);
                     $p2 = true;
                     $this->detach($this, array('NOTIFY_OT_SHIPPING_TAX_CALCS'));
+                    $module = (isset($_SESSION['shipping']) && isset($_SESSION['shipping']['id'])) ? substr($_SESSION['shipping']['id'], 0, strpos($_SESSION['shipping']['id'], '_')) : '';
+                    if ($module != '' && $module != 'free') {
+                        require DIR_WS_CLASSES . 'EditOrdersOtShippingStub.php';
+                        $GLOBALS[$module] = new EditOrdersOtShippingStub();
+                    }
                 }
                 break;
                 

@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2019 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: edit_orders_functions.php 2019-09-13 19:13:51Z webchills $
+ * @version $Id: edit_orders_functions.php 2020-10-03 20:13:51Z webchills $
  */
 // Since other plugins (like "Admin New Order") also provide some of these functions,
 // continue this function-file "load" only if the current page-load is on
@@ -573,7 +573,7 @@ function eo_get_country($country)
         if (!$country_info->EOF) {
             $country_data = array(
                 'id' => $country_info->fields['countries_id'],
-                'name' => zen_get_countries_name($country_info->fields['countries_id']),
+                'name' => zen_get_country_name($country_info->fields['countries_id']),
                 'iso_code_2' => $country_info->fields['countries_iso_code_2'],
                 'iso_code_3' => $country_info->fields['countries_iso_code_3'],
             );
@@ -615,12 +615,12 @@ function eo_get_new_product($product_id, $product_qty, $product_tax, $product_op
     global $db;
 
     $product_id = (int)$product_id;
-    $product_qty = (float)$product_qty;
+    $product_qty = floatval($product_qty);
 
     $retval = array(
         'id' => $product_id,
         'qty' => $product_qty,
-        'tax' => (float)$product_tax,
+        'tax' => floatval($product_tax),
     );
 
     $query = $db->Execute(
@@ -648,7 +648,7 @@ function eo_get_new_product($product_id, $product_qty, $product_tax, $product_op
             'product_is_free' => $query->fields['product_is_free'],
             'products_virtual' => $query->fields['products_virtual'],
             'product_is_always_free_shipping' => $query->fields['product_is_always_free_shipping'],
-            'tax' => ($product_tax === false) ? number_format(zen_get_tax_rate_value($query->fields['products_tax_class_id']), 4) : ((float)$product_tax),
+            'tax' => ($product_tax === false) ? number_format(zen_get_tax_rate_value($query->fields['products_tax_class_id']), 4) : (floatval($product_tax)),
             'tax_description' => zen_get_tax_description($query->fields['products_tax_class_id'])
         ));
 
@@ -797,7 +797,7 @@ function eo_get_product_attribute_prices($attr_id, $attr_value = '', $qty = 1)
         return $retval;
     }
     
-    $qty = (float)$qty;
+    $qty = floatval($qty);
     $product_id = $attribute_price->fields['products_id'];
 
     // Only check when attributes is not free or the product is not free
@@ -1096,7 +1096,7 @@ function eo_update_order_subtotal($order_id, $product, $add = true)
     $products_tax = $product['tax'];
     $qty = $product['qty'];
     $onetime_charges = $product['onetime_charges'];
-    $shown_price = $eo->eoRoundCurrencyValue(zen_add_tax($final_price, $products_tax)) * $qty;
+    $shown_price = $eo->eoRoundCurrencyValue(zen_add_tax($final_price * $qty, $products_tax));
     $shown_price += $eo->eoRoundCurrencyValue(zen_add_tax($onetime_charges, $products_tax));
 
     $starting_totals = array (

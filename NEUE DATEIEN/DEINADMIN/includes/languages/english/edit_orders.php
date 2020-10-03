@@ -1,5 +1,7 @@
 <?php
-
+// -----
+// Language constants used by the /admin/edit_orders.php processing (Edit Orders).
+//
 // Page / Section Headings
 define('HEADING_TITLE', 'Editing Order');
 define('HEADING_TITLE_SEARCH', 'Order ID:');
@@ -116,6 +118,7 @@ define('IMAGE_ORDER_DETAILS', 'Display Order Details');
 define('BUTTON_TO_LIST', 'Order List');
 define('SELECT_ORDER_LIST', 'Jump to Order:');
 
+define('DETAILS', 'Details');
 // Required for various added zen_cart functions
 define('TEXT_UNKNOWN_TAX_RATE', 'Tax');
 define('PULL_DOWN_DEFAULT', 'Please Choose Your Country');

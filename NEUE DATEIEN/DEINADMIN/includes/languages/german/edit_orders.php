@@ -1,4 +1,8 @@
 <?php
+// -----
+// Language constants used by the /admin/edit_orders.php processing (Edit Orders).
+//
+// Page / Section Headings
 define('HEADING_TITLE', 'Bestellung ändern');
 define('HEADING_TITLE_SEARCH', 'Bestellnummer:');
 define('HEADING_TITLE_STATUS', 'Status:');
@@ -103,6 +107,7 @@ define('ADDPRODUCT_CHOOSE_CATEGORY', 'Kategorie wählen');
 define('IMAGE_ORDER_DETAILS', 'Details der Bestellung anzeigen');
 define('BUTTON_TO_LIST', 'Liste sortieren');
 define('SELECT_ORDER_LIST', 'Gehe zu Bestellung:');
+define('DETAILS', 'Details');
 // Required for various added zen_cart functions
 define('TEXT_UNKNOWN_TAX_RATE', 'Steuer');
 define('PULL_DOWN_DEFAULT', 'Bitte wählen Sie Ihr Land');

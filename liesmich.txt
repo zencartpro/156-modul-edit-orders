@@ -1,4 +1,4 @@
-Edit Orders 4.5.1 für Zen Cart 1.5.6 deutsch
+Edit Orders 4.5.4 für Zen Cart 1.5.6 deutsch
 
 Mit dieser Erweiterung können Bestellungen nachträglich bearbeitet werden.
 z.B.
@@ -8,7 +8,16 @@ Attribute eines bestellten Artikels ändern
 Versandart / Versandkosten einer Bestellung ändern
 Aktionskupons/Gutscheine hinzufügen
 
-Die Version 4.5.1 ist eine starke Weiterentwicklung gegenüber früheren Edit Orders Versionen.
+Die Version 4.5.4 ist eine starke Weiterentwicklung gegenüber früheren Edit Orders Versionen.
+
+Changelog 4.5.4 gegenüber 4.5.1
+Bugfixes/Codeänderungen in:
+- tbd
+- includes/modules/order_total/ot_onetime_discount.php
+Neue Dateien seit 4.5.4:
+- tbd
+
+Wer bereits Edit Orders 4.5.1 verwendet, kann auf 4.5.4 aktualisieren, indem die geänderten und neuenDateien hochgeladen werden.
 
 Changelog 4.5.1 gegenüber 4.5.0
 Bugfixes/Codeänderungen in:
@@ -52,8 +61,8 @@ Wenn eine Bestellung wie bisher ganz normal bearbeitet werden soll (z.B. um sie 
 Wenn Sie nur die Adressdaten einer Bestellung ändern wollen, dann ebenfalls nicht Edit Orders verwenden, sondern die ganz normale Adresskorrektur!
 "Mit Edit Orders Bearbeiten" nur dann verwenden, wenn an der Bestellung wirklich etwas grundlegend geändert werden soll!
 
-Sollte im Shop bereits eine ältere Version von Edit Orders als 4.4.4 verwendet werden, diese vor der Installation von 4.5.1 komplett entfernen!
-Die Steuerberechnung wurde in Version 4.5.1 völlig neu gestaltet und gegenüber früheren Versionen extrem verbessert.
+Sollte im Shop bereits eine ältere Version von Edit Orders als 4.4.4 verwendet werden, diese vor der Installation von 4.5.4 komplett entfernen!
+Die Steuerberechnung wurde seit Version 4.5.1 völlig neu gestaltet und gegenüber früheren Versionen extrem verbessert.
 Dennoch:
 Die besten Ergebnisse im Hinblick auf eine korrekte Steuerausweisung werden dann erreicht, wenn es keine unterschiedlichen Steuersätze bei den Artikeln gibt und wenn es sich um einen B2B Shop handelt (Shop verwendet Nettopreise)
 Eine 100% korrekte Steuerausweisung bei geänderten Bestellungen in anderen Szenarien kann nicht garantiert werden, daher dieses Modul unbedingt erst in einem Testshop auf Eignung für den eigenen Shop überprüfen!
